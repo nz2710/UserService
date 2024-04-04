@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use Illuminate\Http\Request;
+use App\Traits\HttpResponses;
+use App\Http\Controllers\Controller;
+use App\Http\Services\Auth\AuthService;
+use App\Http\Requests\AuthRequest\LoginUserRequest;
+use App\Http\Requests\AuthRequest\StoreUserRequest;
+use App\Http\Requests\AuthRequest\ResetPasswordUserRequest;
+use App\Http\Requests\AuthRequest\ChangePasswordUserRequest;
+use App\Http\Requests\AuthRequest\ForgotPasswordUserRequest;
+use App\Http\Requests\AuthRequest\ConfirmPasswordUserRequest;
+use App\Http\Requests\AvatarChangeRequest;
+
+class AuthController extends Controller
+{
+    private $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
+    public function register(StoreUserRequest $request){
+        $request->validated();
+
+        $data = $this->authService->create($request);
+
+        return $this->apiResponse(0, __('Register successful'), $data);
+    }
+
+    public function login(LoginUserRequest $request){
+
+
+        $request->validated();
+
+        $data = $this->authService->login($request);
+
+        return $this->apiResponse(0, __('Login successful'), $data);
+    }
+
+    public function logout() {
+        $data = $this->authService->logout();
+
+        return $this->apiResponse(0, __('Logout successful'), $data);
+    }
+
+    //New Password Controller
+    public function forgotPassword(ForgotPasswordUserRequest $request) {
+
+        $data = $this->authService->forgotPassword($request);
+
+        return response()->json([
+            'success' => $data ? true : false,
+            'message' => $data ? $data : "User not found",
+        ]);
+    }
+
+    public function reset(ResetPasswordUserRequest $request) {
+        $data = $this->authService->reset($request);
+
+        return response()->json([
+            'success' => $data ? true : false,
+            'message' => $data ? "Password reset successfully" : "Error occur..",
+        ]);
+    }
+
+    // ConfirmPassword
+    public function confirm(ConfirmPasswordUserRequest $request) {
+        $data = $this->authService->confirm($request);
+
+        return response()->json([
+            'success' => $data ? true : false,
+            'message' => $data ? "Password Confirmed" : "Wrong password",
+        ]);
+    }
+
+    // Change Password
+    public function changePassword(ChangePasswordUserRequest $request) {
+        $data = $this->authService->changePassword($request);
+
+        return response()->json([
+            'success' => $data ? true : false,
+            'message' => $data ? "Password changed successfully" : "Old password is incorrect",
+        ]);
+    }
+
+
+
+}
