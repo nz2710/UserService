@@ -87,7 +87,7 @@ class AuthService
             $user = User::where('username', $request->username)->with("roles")->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                throw new Exception('Bad cred...');
+                throw new Exception('Wrong password');
             }
 
             if ($user->status == 0) {
@@ -109,6 +109,7 @@ class AuthService
                     'message' =>
                     $ex->getMessage(),
                 ],
+                401
             ));
         }
     }
