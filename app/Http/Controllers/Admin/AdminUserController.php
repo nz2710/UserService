@@ -18,6 +18,7 @@ class AdminUserController extends Controller
     }
 
     public function create(Request $request) {
+
         $data = $this->adminUserService->create($request);
 
         return $this->apiResponse(0, __('Create user successfully.'), $data);

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AdminUserService
@@ -36,7 +37,12 @@ class AdminUserService
     {
         try {
             // Validate the request data
-            $request->validate([$request->all()]);
+            $request->validate([
+                'username' => 'required|min:4|max:25|unique:users|regex:/(^[a-zA-Z]+[a-zA-Z0-9\\-]*$)/u',
+                'email' => 'required|string|unique:users|email:rfc,dns,filter|max:255',
+                'password' => ['required', 'confirmed', Rules\Password::default(), 'max:255'],
+                'role_id' => 'required|exists:roles,id',
+            ]);
 
             // Generate an API key for the user
             $apikey = $this->encryptService->apikeyGen();
@@ -52,24 +58,24 @@ class AdminUserService
             // Attach the selected role to the user
             $user->roles()->attach($request->role_id);
 
-            // if ($user) {
-            //     $data = [
-            //         'user' => $user,
-            //         'token' => $user->createToken('Api Token of ' . $user->email)->plainTextToken,
-            //     ];
+            if ($user) {
+                $data = [
+                    'user' => $user,
+                    'token' => $user->createToken('Api Token of ' . $user->email)->plainTextToken,
+                ];
 
                 // Asynchronously dispatch the Registered event and return the user data and token
                 new Registered($user);
                 // $this->dispatch(new Registered($user));
-                return $user;
-            // } else {
-            //     throw new Exception('Something went wrong when creating the user account');
-            // }
+                return $data;
+            } else {
+                throw new Exception('Something goes wrong when create your account');
+            }
         } catch (Exception $ex) {
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => $ex->getMessage(),
-            ]));
+            ],401));
         }
     }
     public function search($query, $request)

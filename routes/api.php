@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 
 Route::group([
     'middleware' => ['api'],
-	'namespace' => 'Api',
+	'namespace' => '',
 ], function ($router) {
         Route::post('/login', [AuthController::class, 'login']);
         // Route::post('/register', [AuthController::class, 'register']);
@@ -19,7 +19,7 @@ Route::group([
         Route::post('/reset-password', [AuthController::class, 'reset']);
     Route::group([
         'middleware' => ['auth:sanctum','check.banned'],
-        'namespace' => 'Api',
+        'namespace' => '',
         'prefix' => ''
     ], function ($router) {
         Route::post('/logout',   [AuthController::class, 'logout']);
@@ -35,7 +35,7 @@ Route::group([
 
     Route::group([
         'middleware' => ['auth:sanctum','role:admin'],
-        'namespace' => 'Api',
+        'namespace' => '',
         'prefix' => 'admin'
     ], function ($router) {
         // User
