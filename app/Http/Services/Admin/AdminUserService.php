@@ -75,7 +75,7 @@ class AdminUserService
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => $ex->getMessage(),
-            ],401));
+            ],422));
         }
     }
     public function search($query, $request)
