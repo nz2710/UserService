@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Services\RequestForwarder;
 
 
 
@@ -58,6 +59,73 @@ Route::group([
         Route::get('roles/{role_id}/permission', [AdminUserController::class, 'getAllPermissionOfRole']);
         Route::delete('roles/{role_id}/permission/{permission_id}', [AdminUserController::class, 'revokePermissionOfRole']);
 
+        //Depot
+        Route::get('depot', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/depot');
+        });
+        Route::post('depot', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'POST', 'http://host.docker.internal:82/api/admin/depot');
+        });
+        Route::get('depot/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'GET', "http://host.docker.internal:82/api/admin/depot/{$id}");
+        });
+        Route::put('depot/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'PUT', "http://host.docker.internal:82/api/admin/depot/{$id}");
+        });
+        Route::delete('depot/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'DELETE', "http://host.docker.internal:82/api/admin/depot/{$id}");
+        });
+
+        //Order routes
+        Route::get('order', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/order');
+        });
+        Route::post('order', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'POST', 'http://host.docker.internal:82/api/admin/order');
+        });
+        Route::get('order/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'GET', "http://host.docker.internal:82/api/admin/order/{$id}");
+        });
+        Route::put('order/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'PUT', "http://host.docker.internal:82/api/admin/order/{$id}");
+        });
+        Route::delete('order/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'DELETE', "http://host.docker.internal:82/api/admin/order/{$id}");
+        });
+
+        //Partner routes
+        Route::get('partner', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/partner');
+        });
+        Route::post('partner', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'POST', 'http://host.docker.internal:82/api/admin/partner');
+        });
+        Route::get('partner/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'GET', "http://host.docker.internal:82/api/admin/partner/{$id}");
+        });
+        Route::put('partner/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'PUT', "http://host.docker.internal:82/api/admin/partner/{$id}");
+        });
+        Route::delete('partner/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'DELETE', "http://host.docker.internal:82/api/admin/partner/{$id}");
+        });
+
+        //Vehicle routes
+        Route::get('vehicle', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/vehicle');
+        });
+        Route::post('vehicle', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'POST', 'http://host.docker.internal:82/api/admin/vehicle');
+        });
+        Route::get('vehicle/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'GET', "http://host.docker.internal:82/api/admin/vehicle/{$id}");
+        });
+        Route::put('vehicle/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'PUT', "http://host.docker.internal:82/api/admin/vehicle/{$id}");
+        });
+        Route::delete('vehicle/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
+            return $forwarder->forwardRequest($request, 'DELETE', "http://host.docker.internal:82/api/admin/vehicle/{$id}");
+        });
     });
 });
 
