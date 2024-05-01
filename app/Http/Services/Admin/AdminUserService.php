@@ -15,18 +15,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class AdminUserService
 {
     #region User
-    public function scopeSearch($query, $search)
-    {
-        if (!empty($search)) {
-            $query->where(function ($query) use ($search) {
-                $query->Where('first_name', 'like', '%' . strtolower($search) . '%')
-                    ->orWhere('last_name', 'like', '%' . strtolower($search) . '%')
-                    ->orWhere('email', 'like', '%' . strtolower($search) . '%');
-            });
-        }
-        return $query;
-    }
-
     public function __construct(EncryptService $encryptService)
     {
         // $this->versionService = $versionService;
@@ -75,35 +63,41 @@ class AdminUserService
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => $ex->getMessage(),
-            ],422));
+            ], 422));
         }
-    }
-    public function search($query, $request)
-    {
-        if (!empty($request['search'])) {
-            $search = $request['search'];
-            $query->where(function ($query) use ($search) {
-                $query->Where('first_name', 'like', '%' . strtolower($search) . '%')
-                    ->orWhere('last_name', 'like', '%' . strtolower($search) . '%')
-                    ->orWhere('email', 'like', '%' . strtolower($search) . '%');
-
-                // Code above only work with PostgreSQL that use for deploy
-                // $query->whereRaw('LOWER(`name`) LIKE ? ',['%'.$search.'%'])
-                //     ->orWhereRaw('LOWER(`description`) LIKE ? ',['%'.$search.'%'])
-                //     ->orWhereRaw('LOWER(`compatible`) LIKE ? ',['%'.$search.'%']);
-            });
-        }
-
-        return $query;
     }
 
     public function getall($request)
     {
-        $query = User::with(['roles:name'])->latest()->select('id', 'first_name', 'last_name', 'email', 'status');
+        $username = $request->input('username');
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+        $email = $request->input('email');
+        $orderBy = $request->input('order_by', 'id');
+        $sortBy = $request->input('sort_by', 'asc');
 
-        $query = self::search($query, $request);
 
-        return $query->paginate(!empty($request['pageSize']) ? (int)$request['pageSize'] : config('app.pagination'));
+        $user = User::with(['roles:name'])
+            ->select('id', 'username', 'first_name', 'last_name', 'email', 'status')
+            ->orderBy($orderBy, $sortBy);
+
+        if ($username) {
+            $user = $user->where('username', 'like', '%' . $username . '%');
+        }
+
+        if ($first_name) {
+            $user = $user->where('first_name', 'like', '%' . $first_name . '%');
+        }
+
+        if ($last_name) {
+            $user = $user->where('last_name', 'like', '%' . $last_name . '%');
+        }
+
+        if ($email) {
+            $user = $user->where('email', 'like', '%' . $email . '%');
+        }
+
+        return $user->paginate(!empty($request['pageSize']) ? (int)$request['pageSize'] : config('app.pagination'));
     }
 
     public function getNewUsersCount()
