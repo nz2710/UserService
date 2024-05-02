@@ -12,14 +12,14 @@ use App\Services\RequestForwarder;
 
 Route::group([
     'middleware' => ['api'],
-	'namespace' => '',
+    'namespace' => '',
 ], function ($router) {
-        Route::post('/login', [AuthController::class, 'login']);
-        // Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('/reset-password', [AuthController::class, 'reset']);
+    Route::post('/login', [AuthController::class, 'login']);
+    // Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'reset']);
     Route::group([
-        'middleware' => ['auth:sanctum','check.banned'],
+        'middleware' => ['auth:sanctum', 'check.banned'],
         'namespace' => '',
         'prefix' => ''
     ], function ($router) {
@@ -35,7 +35,7 @@ Route::group([
     });
 
     Route::group([
-        'middleware' => ['auth:sanctum','role:admin'],
+        'middleware' => ['auth:sanctum', 'role:admin'],
         'namespace' => '',
         'prefix' => 'admin'
     ], function ($router) {
@@ -126,7 +126,30 @@ Route::group([
         Route::delete('vehicle/{id}', function (Request $request, RequestForwarder $forwarder, $id) {
             return $forwarder->forwardRequest($request, 'DELETE', "http://host.docker.internal:82/api/admin/vehicle/{$id}");
         });
+
+        //Dashboard routes
+        Route::get('dashboard/total-orders', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/total-orders');
+        });
+        Route::get('dashboard/total-revenue', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/total-revenue');
+        });
+        Route::get('dashboard/total-partners', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/total-partners');
+        });
+        Route::get('dashboard/total-vehicles', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/total-vehicles');
+        });
+        Route::get('dashboard/total-depots', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/total-depots');
+        });
+
+        Route::get('dashboard/top-partners-by-revenue', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/top-partners-by-revenue');
+        });
+
+        Route::get('dashboard/monthly-revenue', function (Request $request, RequestForwarder $forwarder) {
+            return $forwarder->forwardRequest($request, 'GET', 'http://host.docker.internal:82/api/admin/dashboard/monthly-revenue');
+        });
     });
 });
-
-
