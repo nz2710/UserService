@@ -13,6 +13,7 @@ use App\Http\Requests\AuthRequest\ChangePasswordUserRequest;
 use App\Http\Requests\AuthRequest\ForgotPasswordUserRequest;
 use App\Http\Requests\AuthRequest\ConfirmPasswordUserRequest;
 use App\Http\Requests\AvatarChangeRequest;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -84,6 +85,32 @@ class AuthController extends Controller
         return response()->json([
             'success' => $data ? true : false,
             'message' => $data ? "Password changed successfully" : "Old password is incorrect",
+        ]);
+    }
+
+    public function getUserFromToken(Request $request)
+    {
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json(['message' => 'Token not provided'], 401);
+        }
+
+        $token = PersonalAccessToken::findToken($token);
+
+        if (!$token) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+
+        $user = $token->tokenable;
+
+        $roles = $user->roles->pluck('name')->toArray();
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'roles' => $roles,
         ]);
     }
 
