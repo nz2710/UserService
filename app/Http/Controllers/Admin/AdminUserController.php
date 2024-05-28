@@ -87,23 +87,4 @@ class AdminUserController extends Controller
     }
     #endregion
 
-    #region Permission
-    public function addPermisisonToRole(Request $request, $role_id) {
-        $data = $this->adminUserService->addPermisisonToRole($request, $role_id);
-
-        return $this->apiResponse(0, __('Add permissions to role successfully.'), $data);
-    }
-
-    public function getAllPermissionOfRole(Request $request, $role_id) {
-        $data = $this->adminUserService->getAllPermissionOfRole($request, $role_id);
-
-        return $this->apiResponse(0, __('Get all permissions of a role successfully.'), $data);
-    }
-
-    public function revokePermissionOfRole(Request $request, $role_id, $permission_id) {
-        $data = $this->adminUserService->revokePermissionOfRole($request, $role_id, $permission_id);
-
-        return $this->apiResponse(0, __('Revoke Permission successfully.'), $data);
-    }
-    #endregion
 }

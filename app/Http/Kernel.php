@@ -68,6 +68,5 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.banned' => CheckBanned::class,
         'role' => RoleMiddleware::class,
-        'permission' => PermissionMiddleware::class,
     ];
 }
