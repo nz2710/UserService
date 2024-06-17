@@ -24,14 +24,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(StoreUserRequest $request){
-        $request->validated();
-
-        $data = $this->authService->create($request);
-
-        return $this->apiResponse(0, __('Register successful'), $data);
-    }
-
     public function login(LoginUserRequest $request){
 
 
@@ -65,16 +57,6 @@ class AuthController extends Controller
         return response()->json([
             'success' => $data ? true : false,
             'message' => $data ? "Password reset successfully" : "Error occur..",
-        ]);
-    }
-
-    // ConfirmPassword
-    public function confirm(ConfirmPasswordUserRequest $request) {
-        $data = $this->authService->confirm($request);
-
-        return response()->json([
-            'success' => $data ? true : false,
-            'message' => $data ? "Password Confirmed" : "Wrong password",
         ]);
     }
 

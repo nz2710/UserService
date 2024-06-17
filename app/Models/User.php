@@ -16,8 +16,8 @@ use App\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    use HasRoles, HasPermissions;
+    use HasApiTokens, HasFactory, Notifiable;
+    use HasRoles;
 
     protected $table = 'users';
 

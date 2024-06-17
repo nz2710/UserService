@@ -18,73 +18,52 @@ class AdminUserController extends Controller
     }
 
     public function create(Request $request) {
-
         $data = $this->adminUserService->create($request);
-
         return $this->apiResponse(0, __('Create user successfully.'), $data);
     }
 
     #region User
     public function getAllUser(Request $request) {
         $data = $this->adminUserService->getall($request);
-
         return $this->apiResponse(0, __('Get users successfully.'), $data);
-    }
-
-    public function getNewUsersCount(Request $request) {
-        $data = $this->adminUserService->getNewUsersCount($request);
-
-        return $this->apiResponse(0, __('Get new users count successfully.'), $data);
-    }
-
-    public function getTotalUsers(Request $request) {
-        $data = $this->adminUserService->getTotalUsers($request);
-
-        return $this->apiResponse(0, __('Get total users count successfully.'), $data);
     }
 
     public function ban(Request $request, $id) {
         $data = $this->adminUserService->ban($request, $id);
-
         return $this->apiResponse(0, __('Ban Successfully.'), $data);
     }
 
     public function unban(Request $request, $id) {
         $data = $this->adminUserService->unban($request, $id);
-
         return $this->apiResponse(0, __('Unban Successfully.'), $data);
+    }
+
+    public function deleteUser($id) {
+        $data = $this->adminUserService->deleteUser($id);
+        return $this->apiResponse(0, __('User deleted successfully.'), $data);
+    }
+
+    public function getUserDetails($id) {
+        $data = $this->adminUserService->getUserDetails($id);
+        return $this->apiResponse(0, __('Get user details successfully.'), $data);
     }
     #endregion
 
     #region Role
     public function getRole(Request $request) {
-
         $data = $this->adminUserService->getRole($request);
-
         return $this->apiResponse(0, __('Get role for user successfully'), $data);
     }
 
     public function createRole(Request $request) {
-
         $data = $this->adminUserService->createRole($request);
-
         return $this->apiResponse(0, __('Get role for user successfully'), $data);
     }
 
-
-    public function setRole(AdminRequest $request, $id) {
-
-        $data = $this->adminUserService->setRole($request, $id);
-
-        return $this->apiResponse(0, __('Set role for user successfully'), $data);
+    public function deleteRole($id) {
+        $data = $this->adminUserService->deleteRole($id);
+        return $this->apiResponse(0, __('Role deleted successfully.'), $data);
     }
 
-    public function revokeRole(Request $request, $user_id, $role_id) {
-
-        $data = $this->adminUserService->revokeRole($request, $user_id, $role_id);
-
-        return $this->apiResponse(0, __('Revoke role for user successfully'), $data);
-    }
     #endregion
-
 }

@@ -63,36 +63,4 @@ class UserService
         }
     }
 
-
-    public function notify($request) {
-        $user = Auth::user();
-
-        if (!$user) {
-            return false;
-        }
-
-        return $user->notifications()->paginate(!empty($request['pageSize']) ? (int)$request['pageSize'] : config('app.pagination'));
-    }
-
-    public function notifyMarkRead($request) {
-        $user = Auth::user();
-
-        if (!$user) {
-            return false;
-        }
-
-        if (!$request->ids) {
-            return false;
-        }
-
-        $array = explode(',', $request->ids);
-
-        foreach ($user->unreadNotifications as $notification) {
-            if (in_array($notification->id, $array)){
-                $notification->markAsRead();
-            }
-        }
-
-        return true;
-    }
 }

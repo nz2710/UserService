@@ -27,7 +27,6 @@ class CreateUsersTable extends Migration
             $table->string('apikey')->unique();
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::table('users', function (Blueprint $table) {

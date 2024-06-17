@@ -30,55 +30,6 @@ class AuthService
         // $this->versionService = $versionService;
         $this->encryptService = $encryptService;
     }
-
-    public function create($request)
-    {
-        try {
-            //Function
-            $request->validated($request->all());
-
-            // Generate an API key for the user
-            $apikey = $this->encryptService->apikeyGen();
-
-            // Generate 2fa code
-            // $google2FA = new Google2FA();
-
-            // $gg2fa = $google2FA->generateSecretKey();
-
-            // Create the user and attach the role with ID 1
-            $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'apikey' => $apikey,
-            ]);
-
-            $user->roles()->attach(1);
-
-            if ($user) {
-                $data = [
-                    'user' => $user,
-                    'token' => $user->createToken('Api Token of ' . $user->email)->plainTextToken,
-                ];
-
-                // Asynchronously dispatch the Registered event and return the user data and token
-                new Registered($user);
-                // $this->dispatch(new Registered($user));
-                return $data;
-            } else {
-                throw new Exception('Something goes wrong when create your account');
-            }
-        } catch (Exception $ex) {
-            throw new HttpResponseException(response()->json(
-                [
-                    'success' => false,
-                    'message' =>
-                    $ex->getMessage(),
-                ],
-            ));
-        }
-    }
-
     public function login($request)
     {
         try {
@@ -103,14 +54,10 @@ class AuthService
 
             return $data;
         } catch (Exception $ex) {
-            throw new HttpResponseException(response()->json(
-                [
-                    'success' => false,
-                    'message' =>
-                    $ex->getMessage(),
-                ],
-                403
-            ));
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => $ex->getMessage(),
+            ], 422));
         }
     }
 
@@ -123,13 +70,10 @@ class AuthService
             }
             return $data;
         } catch (Exception $ex) {
-            throw new HttpResponseException(response()->json(
-                [
-                    'success' => false,
-                    'message' =>
-                    $ex->getMessage(),
-                ],
-            ));
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => $ex->getMessage(),
+            ], 422));
         }
     }
 
@@ -163,13 +107,10 @@ class AuthService
                 'email' => [trans($status)],
             ]);
         } catch (Exception $ex) {
-            throw new HttpResponseException(response()->json(
-                [
-                    'success' => false,
-                    'message' =>
-                    $ex->getMessage(),
-                ],
-            ));
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => $ex->getMessage(),
+            ], 422));
         }
     }
 
@@ -198,20 +139,6 @@ class AuthService
         return false;
     }
 
-    /* Confirm Password */
-    public function confirm($request)
-    {
-        $user = Auth::user();
-
-        if ($user->status == 0) {
-            throw new Exception('Your Account is suspended, please contact Admin.');
-        }
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return false;
-        }
-        return true;
-    }
 
     /* Change Password */
     public function changePassword($request)

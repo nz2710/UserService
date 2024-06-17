@@ -44,19 +44,4 @@ class UserController extends Controller
         return $this->apiResponse(0, __('Avatar change successful'), $data);
     }
 
-    public function notify(Request $request) {
-        $data = $this->userService->notify($request);
-
-        return $this->apiResponse(0, __('Get notifications successful'), $data);
-    }
-
-    public function notifyMarkRead(Request $request) {
-        $data = $this->userService->notifyMarkRead($request);
-
-        return $this->apiResponse(0, __('successful'), $data);
-
-    }
-
-
-
 }
